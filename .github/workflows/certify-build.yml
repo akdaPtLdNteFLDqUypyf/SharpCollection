@@ -1,6 +1,8 @@
 name: certify-build
 
-on: [push]
+on:
+  schedule:
+    - cron: '0 11 * * *' # runs at 11:00 UTC everyday
 
 jobs:
    
