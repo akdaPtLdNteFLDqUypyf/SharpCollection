@@ -9,9 +9,7 @@ jobs:
     runs-on: windows-latest
     
     steps:
-      - uses: actions/checkout@v1
       - name: Build DotNET45
-   
         run: |            
               cd “C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\”
               powershell Invoke-WebRequest -URI https://github.com/GhostPack/Seatbelt/archive/refs/heads/master.zip -OutFile "Seatbelt.zip"
