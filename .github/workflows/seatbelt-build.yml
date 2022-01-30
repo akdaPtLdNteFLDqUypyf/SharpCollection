@@ -14,7 +14,8 @@ jobs:
               cd $Env:GITHUB_WORKSPACE
               powershell Invoke-WebRequest -URI https://github.com/GhostPack/Seatbelt/archive/refs/heads/master.zip -OutFile "Seatbelt.zip"
               tar -xf Seatbelt.zip
-              “C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" $Env:GITHUB_WORKSPACE\Seatbelt-master\Seatbelt\Seatbelt.csproj
+              cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
+              .\MSBuild.exe $Env:GITHUB_WORKSPACE\Seatbelt-master\Seatbelt\Seatbelt.csproj
       - uses: actions/upload-artifact@master
         with: 
          name: Seatbelt
