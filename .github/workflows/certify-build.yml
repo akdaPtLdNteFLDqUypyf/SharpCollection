@@ -9,13 +9,23 @@ jobs:
     runs-on: windows-latest
     
     steps:
-      - name: Build DotNET45
+      - name: Download Certify Main
         run: | 
               cd $Env:GITHUB_WORKSPACE
               powershell Invoke-WebRequest -URI https://github.com/GhostPack/Certify/archive/refs/heads/main.zip -OutFile "Certify.zip"
               tar -xf Certify.zip
+   
+      - name: Setup Nuget.exe
+        uses: warrenbuckley/Setup-Nuget@v1
+
+      - name: Nuget Restore
+        run: nuget restore $Env:GITHUB_WORKSPACE\Certify-main\Certify.sln
+        
+      - name: Build Certify
+        run: |
               cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
               .\MSBuild.exe $Env:GITHUB_WORKSPACE\Certify-main\Certify\Certify.csproj
+              
       - uses: actions/upload-artifact@master
         with: 
          name: Seatbelt
