@@ -1,8 +1,7 @@
 name: certify-build
 
 on:
-  schedule:
-    - cron: '0 11 * * *' # runs at 11:00 UTC everyday
+  [push]
 
 jobs:
    
@@ -34,3 +33,16 @@ jobs:
         with: 
          name: Certify
          path: Certify-main\Certify\bin\Debug\Certify.exe
+         
+      - name: commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add Certify-main\Certify\bin\Debug\Certify.exe
+          git commit -m "update data" -a
+          
+      - name: push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main  
