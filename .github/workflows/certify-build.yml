@@ -12,9 +12,6 @@ jobs:
 
     
     steps:
-      - name: checkout repo content
-        uses: actions/checkout@v2 # checkout the repository content to github runner
-        
       - name: Download Certify Main
         run: | 
               cd $Env:GITHUB_WORKSPACE
@@ -37,17 +34,4 @@ jobs:
       - uses: actions/upload-artifact@master
         with: 
          name: Certify
-         path: Certify-main\Certify\bin\Debug\Certify.exe
-         
-      - name: commit files
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add Certify-main\Certify\bin\Debug\Certify.exe
-          git commit -m "update data" -a
-          
-      - name: push changes
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main  
+         path: Certify-main\Certify\bin\Debug\Certify.exe 
