@@ -15,8 +15,8 @@ jobs:
               powershell Invoke-WebRequest -URI https://github.com/GhostPack/Certify/archive/refs/heads/main.zip -OutFile "Certify.zip"
               tar -xf Certify.zip
               cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
-              .\MSBuild.exe $Env:GITHUB_WORKSPACE\Certify-master\Certify\Certify.csproj
+              .\MSBuild.exe $Env:GITHUB_WORKSPACE\Certify-main\Certify\Certify.csproj
       - uses: actions/upload-artifact@master
         with: 
          name: Seatbelt
-         path: Certify-master\Certify\bin\Debug\Certify.exe
+         path: Certify-main\Certify\bin\Debug\Certify.exe
