@@ -1,0 +1,38 @@
+name: SharpScribbles-build
+
+on:
+  schedule:
+    - cron: '0 11 * * *' # runs at 11:00 UTC everyday
+  workflow_dispatch:
+    
+jobs:
+   
+  build:
+    
+    runs-on: windows-latest
+     
+    steps:
+      - name: Download SharpScribbles Main
+        run: | 
+              cd $Env:GITHUB_WORKSPACE
+              powershell Invoke-WebRequest -URI https://api.github.com/repos/V1V1/SharpScribbles/zipball -OutFile "SharpScribbles.zip"
+              mkdir SharpScribbles
+              tar -xf SharpScribbles.zip -C SharpScribbles --strip-components 1
+  
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-api-key: ${{ secrets.NuGetAPIKey }}
+          nuget-version: '5.x'
+
+      - name: Nuget Restore
+        run: nuget restore $Env:GITHUB_WORKSPACE\SharpScribbles\StickyNotesExtract\StickyNotesExtract.sln
+        
+      - name: Build Certify
+        run: |
+              cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
+              .\MSBuild.exe $Env:GITHUB_WORKSPACE\SharpScribbles\StickyNotesExtract\StickyNotesExtract\StickyNotesExtract.csproj
+              
+      - uses: actions/upload-artifact@master
+        with: 
+         name: SharpScribbles
+         path: SharpScribbles\StickyNotesExtract\StickyNotesExtract\bin\Debug\StickyNotesExtract.exe 

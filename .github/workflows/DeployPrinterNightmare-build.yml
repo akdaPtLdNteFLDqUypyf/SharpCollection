@@ -1,0 +1,38 @@
+name: DeployPrinterNightmare-build
+
+on:
+  schedule:
+    - cron: '0 11 * * *' # runs at 11:00 UTC everyday
+  workflow_dispatch:
+    
+jobs:
+   
+  build:
+    
+    runs-on: windows-latest
+     
+    steps:
+      - name: Download DeployPrinterNightmare Main
+        run: | 
+              cd $Env:GITHUB_WORKSPACE
+              powershell Invoke-WebRequest -URI https://api.github.com/repos/Flangvik/DeployPrinterNightmare/zipball -OutFile "DeployPrinterNightmare.zip"
+              mkdir DeployPrinterNightmare
+              tar -xf DeployPrinterNightmare.zip -C DeployPrinterNightmare --strip-components 1
+  
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-api-key: ${{ secrets.NuGetAPIKey }}
+          nuget-version: '5.x'
+
+      - name: Nuget Restore
+        run: nuget restore $Env:GITHUB_WORKSPACE\DeployPrinterNightmare\DeployPrinterNightmare\DeployPrinterNightmare.sln
+        
+      - name: Build Certify
+        run: |
+              cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
+              .\MSBuild.exe $Env:GITHUB_WORKSPACE\DeployPrinterNightmare\DeployPrinterNightmare\DeployPrinterNightmare\DeployPrinterNightmare.csproj
+              
+      - uses: actions/upload-artifact@master
+        with: 
+         name: DeployPrinterNightmare
+         path: DeployPrinterNightmare\DeployPrinterNightmare\DeployPrinterNightmare\bin\Debug\DeployPrinterNightmare.exe 

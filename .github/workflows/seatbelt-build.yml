@@ -1,24 +1,38 @@
-name: seatbelt-build
+name: Seatbelt-build
 
 on:
   schedule:
     - cron: '0 11 * * *' # runs at 11:00 UTC everyday
-
+  workflow_dispatch:
+    
 jobs:
    
   build:
     
     runs-on: windows-latest
-    
+     
     steps:
-      - name: Build DotNET45
+      - name: Download Seatbelt Main
         run: | 
               cd $Env:GITHUB_WORKSPACE
-              powershell Invoke-WebRequest -URI https://github.com/GhostPack/Seatbelt/archive/refs/heads/master.zip -OutFile "Seatbelt.zip"
-              tar -xf Seatbelt.zip
+              powershell Invoke-WebRequest -URI https://api.github.com/repos/GhostPack/Seatbelt/zipball -OutFile "Seatbelt.zip"
+              mkdir Seatbelt
+              tar -xf Seatbelt.zip -C Seatbelt --strip-components 1
+  
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-api-key: ${{ secrets.NuGetAPIKey }}
+          nuget-version: '5.x'
+
+      - name: Nuget Restore
+        run: nuget restore $Env:GITHUB_WORKSPACE\Seatbelt\Seatbelt.sln
+        
+      - name: Build Certify
+        run: |
               cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
-              .\MSBuild.exe $Env:GITHUB_WORKSPACE\Seatbelt-master\Seatbelt\Seatbelt.csproj
+              .\MSBuild.exe $Env:GITHUB_WORKSPACE\Seatbelt\Seatbelt\Seatbelt.csproj
+              
       - uses: actions/upload-artifact@master
         with: 
          name: Seatbelt
-         path: Seatbelt-master\Seatbelt\bin\Debug\Seatbelt.exe
+         path: Seatbelt\Seatbelt\bin\Debug\Seatbelt.exe 

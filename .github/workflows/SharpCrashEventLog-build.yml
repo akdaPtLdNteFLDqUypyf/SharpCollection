@@ -1,0 +1,38 @@
+name: SharpCrashEventLog-build
+
+on:
+  schedule:
+    - cron: '0 11 * * *' # runs at 11:00 UTC everyday
+  workflow_dispatch:
+    
+jobs:
+   
+  build:
+    
+    runs-on: windows-latest
+     
+    steps:
+      - name: Download SharpCrashEventLog Main
+        run: | 
+              cd $Env:GITHUB_WORKSPACE
+              powershell Invoke-WebRequest -URI https://api.github.com/repos/slyd0g/SharpCrashEventLog/zipball -OutFile "SharpCrashEventLog.zip"
+              mkdir SharpCrashEventLog
+              tar -xf SharpCrashEventLog.zip -C SharpCrashEventLog --strip-components 1
+  
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-api-key: ${{ secrets.NuGetAPIKey }}
+          nuget-version: '5.x'
+
+      - name: Nuget Restore
+        run: nuget restore $Env:GITHUB_WORKSPACE\SharpCrashEventLog\SharpCrashEventLog.sln
+        
+      - name: Build Certify
+        run: |
+              cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
+              .\MSBuild.exe $Env:GITHUB_WORKSPACE\SharpCrashEventLog\SharpCrashEventLog\SharpCrashEventLog.csproj
+              
+      - uses: actions/upload-artifact@master
+        with: 
+         name: SharpCrashEventLog
+         path: SharpCrashEventLog\SharpCrashEventLog\bin\Debug\SharpCrashEventLog.exe 

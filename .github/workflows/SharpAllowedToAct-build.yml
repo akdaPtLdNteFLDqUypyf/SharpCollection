@@ -1,0 +1,38 @@
+name: SharpAllowedToAct-build
+
+on:
+  schedule:
+    - cron: '0 11 * * *' # runs at 11:00 UTC everyday
+  workflow_dispatch:
+    
+jobs:
+   
+  build:
+    
+    runs-on: windows-latest
+     
+    steps:
+      - name: Download SharpAllowedToAct Main
+        run: | 
+              cd $Env:GITHUB_WORKSPACE
+              powershell Invoke-WebRequest -URI https://api.github.com/repos/pkb1s/SharpAllowedToAct/zipball -OutFile "SharpAllowedToAct.zip"
+              mkdir SharpAllowedToAct
+              tar -xf SharpAllowedToAct.zip -C SharpAllowedToAct --strip-components 1
+  
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-api-key: ${{ secrets.NuGetAPIKey }}
+          nuget-version: '5.x'
+
+      - name: Nuget Restore
+        run: nuget restore $Env:GITHUB_WORKSPACE\SharpAllowedToAct\SharpAllowedToAct.sln
+        
+      - name: Build Certify
+        run: |
+              cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
+              .\MSBuild.exe $Env:GITHUB_WORKSPACE\SharpAllowedToAct\SharpAllowedToAct\SharpAllowedToAct.csproj
+              
+      - uses: actions/upload-artifact@master
+        with: 
+         name: SharpAllowedToAct
+         path: SharpAllowedToAct\SharpAllowedToAct\bin\Debug\SharpAllowedToAct.exe 

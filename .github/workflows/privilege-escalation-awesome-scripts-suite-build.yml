@@ -1,0 +1,38 @@
+name: privilege-escalation-awesome-scripts-suite-build
+
+on:
+  schedule:
+    - cron: '0 11 * * *' # runs at 11:00 UTC everyday
+  workflow_dispatch:
+    
+jobs:
+   
+  build:
+    
+    runs-on: windows-latest
+     
+    steps:
+      - name: Download privilege-escalation-awesome-scripts-suite Main
+        run: | 
+              cd $Env:GITHUB_WORKSPACE
+              powershell Invoke-WebRequest -URI https://api.github.com/repos/carlospolop/privilege-escalation-awesome-scripts-suite/zipball -OutFile "privilege-escalation-awesome-scripts-suite.zip"
+              mkdir privilege-escalation-awesome-scripts-suite
+              tar -xf privilege-escalation-awesome-scripts-suite.zip -C privilege-escalation-awesome-scripts-suite --strip-components 1
+  
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-api-key: ${{ secrets.NuGetAPIKey }}
+          nuget-version: '5.x'
+
+      - name: Nuget Restore
+        run: nuget restore $Env:GITHUB_WORKSPACE\privilege-escalation-awesome-scripts-suite\winPEAS\winPEASexe\winPEAS.sln
+        
+      - name: Build Certify
+        run: |
+              cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
+              .\MSBuild.exe $Env:GITHUB_WORKSPACE\privilege-escalation-awesome-scripts-suite\winPEAS\winPEASexe\Tests\winPEAS.Tests.csproj
+              
+      - uses: actions/upload-artifact@master
+        with: 
+         name: privilege-escalation-awesome-scripts-suite
+         path: privilege-escalation-awesome-scripts-suite\winPEAS\winPEASexe\Tests\bin\Debug\winPEAS.Tests.exe 
