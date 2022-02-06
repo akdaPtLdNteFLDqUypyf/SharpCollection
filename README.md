@@ -15,6 +15,7 @@ You probably should not download and run random binariers off the internet. Thes
 * Ensure artifact is uploaded for all tools
 * Make sure all tools actually run
 * Fix tools that don't confirm to standard build process
+* Publish helper tool written to automate C# Build yaml files
 
 # Warning $$$
 If you fork this repo and make it private you make incur costs from total Github actions minutes exceeding free tier. 
