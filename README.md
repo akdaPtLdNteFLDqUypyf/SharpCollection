@@ -16,6 +16,8 @@ You probably should not download and run random binariers off the internet. Thes
 * Make sure all tools actually run
 * Fix tools that don't confirm to standard build process
 * Publish helper tool written to automate C# Build yaml files
+* Create build action for multiple .NET versions
+* Specify CPU architecture
 
 # Warning $$$
 If you fork this repo and make it private you make incur costs from total Github actions minutes exceeding free tier. 
@@ -27,7 +29,7 @@ If you fork this repo and make it private you make incur costs from total Github
 | ADCollector | :heavy_check_mark: |
 | ADCSPwn | :heavy_check_mark: |
 | ADSearch | :heavy_check_mark: |
-| ADFSDump| | :heavy_check_mark: |
+| ADFSDump| :heavy_check_mark: |
 | AtYourService | :heavy_check_mark: |
 | BetterSafetyKatz | :heavy_check_mark: |
 | Certify | :heavy_check_mark: |
