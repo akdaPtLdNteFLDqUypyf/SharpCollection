@@ -20,7 +20,7 @@ You probably should not download and run random binariers off the internet. Thes
 * Specify CPU architecture
 
 # Warning $$$
-If you fork this repo and make it private you make incur costs from total Github actions minutes exceeding free tier. 
+If you fork this repo and make it private you may incur costs from total Github actions minutes exceeding free tier. 
 
 # Available builds
 
